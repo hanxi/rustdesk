@@ -6,6 +6,8 @@ import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import java.io.IOException
+import java.util.concurrent.TimeoutException
 
 class PermissionRequestTransparentActivity: Activity() {
     private val logTag = "permissionRequest"
