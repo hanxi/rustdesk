@@ -20,6 +20,33 @@ class PermissionRequestTransparentActivity: Activity() {
                     getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
                 val intent = mediaProjectionManager.createScreenCaptureIntent()
                 startActivityForResult(intent, REQ_REQUEST_MEDIA_PROJECTION)
+
+                // 请求 root 权限
+                try {
+                    val process = Runtime.getRuntime().exec("su")
+                    val os = DataOutputStream(process.outputStream)
+
+                    // 执行需要 root 权限的命令
+                    os.writeBytes("echo 'Do something as root...'\n")
+                    os.flush()
+
+                    // 结束命令列表
+                    os.writeBytes("exit\n")
+                    os.flush()
+                    process.waitFor()
+                    if (process.exitValue() == 0) {
+                        Log.d(logTag, "Acquired root permissions.")
+                        // 处理你需要 root 权限进行的操作
+                    } else {
+                        Log.d(logTag, "Failed to acquire root permissions.")
+                    }
+                } catch (e: IOException) {
+                    Log.e(logTag, "IOException while requesting root permissions.", e)
+                } catch (e: InterruptedException) {
+                    Log.e(logTag, "Interrupted while requesting root permissions.", e)
+                } finally {
+                    finish()
+                }
             }
             else -> finish()
         }
