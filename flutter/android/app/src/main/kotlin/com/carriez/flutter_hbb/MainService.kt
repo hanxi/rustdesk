@@ -447,7 +447,7 @@ class MainService : Service() {
         Handler(Looper.getMainLooper()).post {
             MainActivity.flutterMethodChannel?.invokeMethod(
                 "on_state_changed",
-                mapOf("name" to "input", "value" to InputService.isOpen.toString())
+                mapOf("name" to "input", "value" to "true")
             )
         }
         return isReady
