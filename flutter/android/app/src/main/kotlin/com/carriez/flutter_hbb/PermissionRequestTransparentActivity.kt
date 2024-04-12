@@ -16,8 +16,6 @@ class PermissionRequestTransparentActivity: Activity() {
         super.onCreate(savedInstanceState)
         Log.d(logTag, "onCreate PermissionRequestTransparentActivity: intent.action: ${intent.action}")
 
-        grantRootAccess()
-
         when (intent.action) {
             ACT_REQUEST_MEDIA_PROJECTION -> {
                 val mediaProjectionManager =
@@ -26,23 +24,6 @@ class PermissionRequestTransparentActivity: Activity() {
                 startActivityForResult(intent, REQ_REQUEST_MEDIA_PROJECTION) 
             }
             else -> finish()
-        }
-    }
-
-    fun grantRootAccess() {
-        var isRooted = try {
-            Runtime.getRuntime().exec("su")
-            true
-        } catch (e: IOException) {
-            false
-        } catch (e: TimeoutException) {
-            false
-        }
-        Thread.sleep(1000)
-        if (isRooted) {
-            Log.d("Superuser", "Root access is successful.")
-        } else {
-            Log.e("Superuser", "Root access could not be provided.")
         }
     }
 

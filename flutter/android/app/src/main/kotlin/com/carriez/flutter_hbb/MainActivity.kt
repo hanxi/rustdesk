@@ -19,7 +19,8 @@ import com.hjq.permissions.XXPermissions
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-
+import java.io.IOException
+import java.util.concurrent.TimeoutException
 
 class MainActivity : FlutterActivity() {
     companion object {
@@ -29,6 +30,14 @@ class MainActivity : FlutterActivity() {
     private val channelTag = "mChannel"
     private val logTag = "mMainActivity"
     private var mainService: MainService? = null
+    private var isRooted = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(logTag, "onCreate MainActivity: intent.action: ${intent.action}")
+        
+        grantRootAccess()
+    }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -122,10 +131,14 @@ class MainActivity : FlutterActivity() {
                     }
                 }
                 "check_permission" -> {
-                    if (call.arguments is String) {
-                        result.success(XXPermissions.isGranted(context, call.arguments as String))
+                    if (isRooted) {
+                        result.success(true)
                     } else {
-                        result.success(false)
+                        if (call.arguments is String) {
+                            result.success(XXPermissions.isGranted(context, call.arguments as String))
+                        } else {
+                            result.success(false)
+                        }
                     }
                 }
                 "request_permission" -> {
@@ -221,6 +234,23 @@ class MainActivity : FlutterActivity() {
                     result.error("-1", "No such method", null)
                 }
             }
+        }
+    }
+
+    private fun grantRootAccess() {
+        isRooted = try {
+            Runtime.getRuntime().exec("su")
+            true
+        } catch (e: IOException) {
+            false
+        } catch (e: TimeoutException) {
+            false
+        }
+        Thread.sleep(1000)
+        if (isRooted) {
+            Log.d(logTag, "Root access is successful.")
+        } else {
+            Log.e(logTag, "Root access could not be provided.")
         }
     }
 }
