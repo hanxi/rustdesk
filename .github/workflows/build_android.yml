@@ -27,7 +27,7 @@ env:
   # for arm64 linux because official Dart SDK does not work
   FLUTTER_ELINUX_VERSION: "3.16.9"
   FLUTTER_ELINUX_COMMIT_ID: "c02bd16e1630f5bd690b85c5c2456ac1920e25af"
-  TAG_NAME: "${{ inputs.upload-tag }}"
+  TAG_NAME: "alpha"
   VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
   # vcpkg version: 2023.10.19
   # for multiarch gcc compatibility
